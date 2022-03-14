@@ -157,6 +157,301 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ulricab.github.io/2022/03/10/springboot%E5%AE%9E%E6%88%98-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="胡培鸿">
+      <meta itemprop="description" content="苟日新，日日新，又日新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="哆啦a梦的四次元口袋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/10/springboot%E5%AE%9E%E6%88%98-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" class="post-title-link" itemprop="url">spring-异常处理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-10 17:14:27" itemprop="dateCreated datePublished" datetime="2022-03-10T17:14:27+08:00">2022-03-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-03-14 15:08:51" itemprop="dateModified" datetime="2022-03-14T15:08:51+08:00">2022-03-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring/" itemprop="url" rel="index"><span itemprop="name">spring</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="spring实战之异常处理"><a href="#spring实战之异常处理" class="headerlink" title="spring实战之异常处理"></a>spring实战之异常处理</h1><h2 id="异常处理机制"><a href="#异常处理机制" class="headerlink" title="异常处理机制"></a>异常处理机制</h2><p>对于基本的应用程序而言，异常处理流程是：抛出异常，捕获异常。</p>
+<p><strong>抛出异常</strong>：当一个方法出现错误引发异常时，方法创建异常对象并交付运行时系统，异常对象中包含了异常类型和异常出现时的程序状态等异常信息。运行时系统负责寻找处置异常的代码并执行。        </p>
+<p><strong>捕捉异常</strong>：在方法抛出异常之后，运行时系统将转为寻找合适的异常处理器（exception handler）。<strong>潜在的异常处理器是在异常发生时依次存留在调用栈中的方法的集合。当异常处理器所能处理的异常类型与方法抛出的异常类型相符时，即为合适的异常处理器。</strong>运行时系统从发生异常的方法开始，依次回查调用栈中的方法，直至找到含有合适异常处理器的方法并执行。当运行时系统遍历调用栈而未找到合适的异常处理器，则运行时系统终止。        </p>
+<h2 id="全局异常处理-ExceptionHandler注解和-ControllerAdvice注解"><a href="#全局异常处理-ExceptionHandler注解和-ControllerAdvice注解" class="headerlink" title="全局异常处理---@ExceptionHandler注解和@ControllerAdvice注解"></a>全局异常处理---@ExceptionHandler注解和@ControllerAdvice注解</h2><h3 id="ExceptionHandler"><a href="#ExceptionHandler" class="headerlink" title="@ExceptionHandler"></a>@ExceptionHandler</h3><p>@ExceptionHandler注解帮助我们在某个Controller类定义一个异常处理方法，当controller类的方法出现指定异常时，会执行处理该异常的方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.ui.Model;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ExceptionHandler;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 抛出异常 Controller，测试异常</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExceptionController</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@RequestMapping(&quot;/exceptionMethod&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">exceptionMethod</span><span class="params">(Model model)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		</span><br><span class="line">		model.addAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;没有抛出异常&quot;</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span> num = <span class="number">1</span>/<span class="number">0</span>;</span><br><span class="line">		log.info(String.valueOf(num));</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;home&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 描述：捕获 ExceptionController 中的 ArithmeticException 异常</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> model 将Model对象注入到方法中</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> e 将产生异常对象注入到方法中</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> 指定错误页面</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@ExceptionHandler(value = &#123;ArithmeticException.class&#125;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">arithmeticExceptionHandle</span><span class="params">(Model model, Exception e)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		model.addAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;@ExceptionHandler&quot;</span> + e.getMessage());</span><br><span class="line">		log.info(e.getMessage());</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;error&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但通过上述这种方法，我们发现每一个Controller类即使具有相同的异常处理流程，都需要定义一套自己的异常处理方法，这样一来就造成了大量的冗余，同时新增一种异常处理方法需要修改所有的controller类。</p>
+<p>为此spring3.2提供了@ControllerAdvice注解。</p>
+<h3 id="ControllerAdvice"><a href="#ControllerAdvice" class="headerlink" title="@ControllerAdvice"></a>@ControllerAdvice</h3><p>@ControllerAdvice类似于aop的思想，其通过通过用户告知的拦截规则，帮助用户拦截想要的方法，并根据更细致的注解@ExceptionHandle，@InitBinder，@ModelAttribute完成定制化的处理。</p>
+<p>@ControllerAdvice默认advice所有的Controller，但也可以通过@ControllerAdvice(basePackages=”org.my.pkg”), 匹配org.my.pkg包及其子包下的所有Controller，当然也可以用数组的形式指定，如：@ControllerAdvice(basePackages={“org.my.pkg”, “org.my.other.pkg”}), 也可以通过指定注解来匹配，比如我自定了一个 @CustomAnnotation 注解，我想匹配所有被这个注解修饰的 Controller, 可以这么写：@ControllerAdvice（annotations={CustomAnnotation.class})</p>
+<p><strong>使用@ControllerAdvice和@ExceptionHandle，我们可以做到全局异常处理</strong>, 如下我们通过自定义的方法去处理抛出的apiException。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@RestControllerAdvice</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalExceptionResolver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="meta">@ExceptionHandler(value = ApiException.class)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CommonResult <span class="title">handle</span><span class="params">(ApiException e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (e.getErrorCode() != <span class="keyword">null</span>) &#123;</span><br><span class="line">            log.error(e.getErrorCode().getMessage());</span><br><span class="line">            <span class="keyword">return</span> CommonResult.failed(e.getErrorCode());</span><br><span class="line">        &#125;</span><br><span class="line">        log.error(e.getMessage());</span><br><span class="line">        <span class="keyword">return</span> CommonResult.failed(e.getMessage());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>有了全局异常处理机制，我们拥有了通用的异常处理方法，但是如何更合理的抛出与捕获异常？</p>
+<h2 id="断言与自定义异常"><a href="#断言与自定义异常" class="headerlink" title="断言与自定义异常"></a>断言与自定义异常</h2><p>Assert(断言)是我们写测试用例经常用到的机制，其帮助我们拥有更简洁的编码，以下对比了断言和普通的throw异常:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>&#123;</span><br><span class="line">	...</span><br><span class="line">	User user = userMapper.selectById(userId);</span><br><span class="line">	Assert.notNull(user,<span class="string">&quot;用户不存在.&quot;</span>);</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test2</span><span class="params">()</span></span>&#123;</span><br><span class="line">	...</span><br><span class="line">	User user = userMapper.selectById(userId);</span><br><span class="line">	<span class="keyword">if</span>(user == <span class="keyword">null</span>)&#123;</span><br><span class="line">		<span class="keyword">throw</span> IllegalArgumentException(<span class="string">&quot;用户不存在.&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>断言帮助我们快速的检测代码的正确性，但业务逻辑中的异常常常对应特点场景，比如:用户校验失败等，我们需要特点的异常码和异常信息，但同时我们又不希望定义过多的异常方法和异常类。</p>
+<p>此时我们需要自定义断言类，并建立一个通用的模型来表达我们业务中遇到的异常。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 断言处理类，用于抛出各种API异常</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> hupeihong</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022/3/5</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Asserts</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">fail</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ApiException(message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">fail</span><span class="params">(IErrorCode errorCode)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ApiException(errorCode);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义API异常</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> hupeihong</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022/3/5</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApiException</span> <span class="keyword">extends</span> <span class="title">RuntimeException</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> IErrorCode errorCode;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ApiException</span><span class="params">(IErrorCode errorCode)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(errorCode.getMessage());</span><br><span class="line">        <span class="keyword">this</span>.errorCode = errorCode;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ApiException</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ApiException</span><span class="params">(Throwable cause)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(cause);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ApiException</span><span class="params">(String message, Throwable cause)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(message, cause);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IErrorCode <span class="title">getErrorCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> errorCode;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上自定义异常类和断言，通过包含状态码信息，来更通用的表示业务遇到的异常。而状态码接口，可借助enum枚举类实现多种场景的实例，之后每增加一种异常都只需要增加一个枚举实例，而不需要新建一个异常类来实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 常用API返回对象接口</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> hupeihong</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022/3/5</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IErrorCode</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回状态码</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> long</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="title">getCode</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回信息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> string</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">String <span class="title">getMessage</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">ResultCode</span> <span class="keyword">implements</span> <span class="title">IErrorCode</span> </span>&#123;</span><br><span class="line">    SUCCESS(<span class="number">200</span>, <span class="string">&quot;操作成功&quot;</span>),</span><br><span class="line">    FAILED(<span class="number">500</span>, <span class="string">&quot;操作失败&quot;</span>),</span><br><span class="line">    VALIDATE_FAILED(<span class="number">404</span>, <span class="string">&quot;参数检验失败&quot;</span>),</span><br><span class="line">    UNAUTHORIZED(<span class="number">401</span>, <span class="string">&quot;暂未登录或token已经过期&quot;</span>),</span><br><span class="line">    FORBIDDEN(<span class="number">403</span>, <span class="string">&quot;没有相关权限&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> code;</span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ResultCode</span><span class="params">(<span class="keyword">long</span> code, String message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code;</span><br><span class="line">        <span class="keyword">this</span>.message = message;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMessage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> message;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="更细致的优化—try-catch语句"><a href="#更细致的优化—try-catch语句" class="headerlink" title="更细致的优化—try catch语句"></a>更细致的优化—try catch语句</h2><p>通过全局异常处理机制，我们获得了更通用的异常处理方法。但当我们希望对某些请求做更细致的处理时，我们依然可以使用try catch语句。</p>
+<p>例如:如果希望在excel数据导入的过程，即使导入失败，也继续将剩余的excel文件导入，我们可以先将异常catch起来，而不选择向上抛出进入全局异常处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ApiOperation(value = &quot;上传基础数据excel文件&quot;)</span></span><br><span class="line"><span class="meta">@RequestMapping(value = &quot;/submitExcel&quot;, method = RequestMethod.POST)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> CommonResult <span class="title">submitSelfEvalData</span><span class="params">(<span class="meta">@RequestParam(value = &quot;EMRFile&quot;)</span>MultipartFile[] excelFiles)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> failCount=<span class="number">0</span>;</span><br><span class="line">    ArrayList&lt;String&gt; filedFileNameList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(MultipartFile excelFile:excelFiles) &#123;</span><br><span class="line">        <span class="comment">//循环中对异常进行catch，使得仅异常数据导入失败，其他数据能正常导入</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">boolean</span> flag = basicService.readAndSaveBasicData(excelFile);</span><br><span class="line">            <span class="keyword">if</span>(!flag)&#123;</span><br><span class="line">                failCount++;</span><br><span class="line">                filedFileNameList.add(excelFile.getOriginalFilename());</span><br><span class="line">                log.debug(<span class="string">&quot;importFile failed:&#123;&#125;&quot;</span>, excelFile.getOriginalFilename());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            failCount++;</span><br><span class="line">            filedFileNameList.add(excelFile.getOriginalFilename());</span><br><span class="line">            log.debug(<span class="string">&quot;importFile failed:&#123;&#125;&quot;</span>, excelFile.getOriginalFilename());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(failCount!=<span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> CommonResult.failed(failCount + <span class="string">&quot;个文件导入失败:&quot;</span> + filedFileNameList.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> CommonResult.success(<span class="keyword">null</span>,<span class="string">&quot;所有文件导入成功&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时，try catch语句也可以借助异常链的机制，对系统的异常捕获并抛出我们自定义的异常。</p>
+<p>如下: 我们在读取excel文件时，将可能的io异常捕获并通过断言抛出我们自定义异常处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">readAndSaveBasicData</span><span class="params">(MultipartFile excelFile)</span></span>&#123;</span><br><span class="line">    InputStream input = <span class="keyword">null</span>;</span><br><span class="line">    Workbook workbook = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">boolean</span> flag = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 得到文件的资源输入流</span></span><br><span class="line">        input = excelFile.getInputStream();</span><br><span class="line">        <span class="comment">// 得到处理excel的Workbook对象</span></span><br><span class="line">        workbook = ExcelUtils.getWorkbookByExtensionName(input, excelFile.getOriginalFilename());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">        Asserts.fail(<span class="string">&quot;文件上传失败&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="常见异常总结"><a href="#常见异常总结" class="headerlink" title="常见异常总结"></a>常见异常总结</h2>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ulricab.github.io/2022/02/24/elasticsearch%E4%B9%8B%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="胡培鸿">
+      <meta itemprop="description" content="苟日新，日日新，又日新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="哆啦a梦的四次元口袋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/24/elasticsearch%E4%B9%8B%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" class="post-title-link" itemprop="url">Hello World</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-24 20:00:59" itemprop="dateCreated datePublished" datetime="2022-02-24T20:00:59+08:00">2022-02-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-03 16:38:05" itemprop="dateModified" datetime="2021-08-03T16:38:05+08:00">2021-08-03</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ulricab.github.io/2022/02/24/linux%E4%B9%8B%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="胡培鸿">
+      <meta itemprop="description" content="苟日新，日日新，又日新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="哆啦a梦的四次元口袋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/24/linux%E4%B9%8B%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">linux之文件权限管理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-24 17:14:27" itemprop="dateCreated datePublished" datetime="2022-02-24T17:14:27+08:00">2022-02-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-02-27 14:24:54" itemprop="dateModified" datetime="2022-02-27T14:24:54+08:00">2022-02-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">权限管理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="linux之文件权限管理"><a href="#linux之文件权限管理" class="headerlink" title="linux之文件权限管理"></a>linux之文件权限管理</h1><p>linux系统将文件使用者分为3个类别，文件拥有者、用户组和其他人。</p>
+<p>通常我们可以使用ls -al命令查看当前目前下所有文件(包括隐藏文件)的权限、容量等属性。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">获取当前目录权限、用户、容量信息</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls -al</span></span><br><span class="line">total 316284</span><br><span class="line">drwxr-xr-x 2 hupeihong user         0 2月  24 14:28 .</span><br><span class="line">drwxr-xr-x 2 hupeihong user         0 2月  24 14:09 ..</span><br><span class="line">-rwxr-xr-x 1 hupeihong user 303434036 2月  24 14:17 desc2022.xml</span><br><span class="line">-rwxr-xr-x 1 hupeihong user  25221574 2月  24 14:55 out.log</span><br><span class="line">-rwxr-xr-x 1 hupeihong user     15462 2月  24 14:54 readMeSHBydom.py</span><br><span class="line">drwxr-xr-x 2 hupeihong user         0 2月  24 14:28 verhoeffalgorithm</span><br><span class="line">|[-][-][-] -  [--]     [--]</span><br><span class="line">| |  |  |  |    |        |</span><br><span class="line">| |  |  |  |    |        +---------- &gt; 7. Group</span><br><span class="line">| |  |  |  |    +--------------------&gt; 6. Owner</span><br><span class="line">| |  |  |  +-------------------------&gt; 5. Alternate Access Method</span><br><span class="line">| |  |  +----------------------------&gt; 4. Others Permissions</span><br><span class="line">| |  +-------------------------------&gt; 3. Group Permissions</span><br><span class="line">| +----------------------------------&gt; 2. Owner Permissions</span><br><span class="line">+------------------------------------&gt; 1. File Type</span><br></pre></td></tr></table></figure>
+
+<p>第一个字符表示了文件的类型</p>
+<ul>
+<li>d：表示是一个目录，目录是一个特殊的文件。</li>
+<li>-：表示这是一个普通的文件。</li>
+<li>l：表示这是一个符号链接文件，实际上它指向另一个文件。</li>
+<li>b、c：分别表示区块设备和其他的外围设备，是特殊类型的文件。</li>
+<li>s、p：这些文件关系到系统的数据结构和管道，通常很少见到。</li>
+</ul>
+<p>第2到10字符中每三个字符一组，分别表示所有者权限，用户组权限和其他用户权限。</p>
+<ul>
+<li>r(Read)：对文件而言，具有读取文件内容的权限；对目录来说，具有浏览目录的权限</li>
+<li>w(Write)：对文件而言，具有新增、修改文件内容的权限；对目录来说，具有删除、移动目录内文件的权限。</li>
+<li>x(execute)：对文件而言，具有执行文件的权限；对目录了来说该用户具有进入目录的权限。</li>
+</ul>
+<p>特殊情况：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">通过url克隆远程仓库</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> [远程URL]</span></span><br></pre></td></tr></table></figure>
+<p>当我们获取git仓库后，会得到一个.git的子目录，其保存了git仓库相关文件</p>
+<h2 id="文件生命周期"><a href="#文件生命周期" class="headerlink" title="文件生命周期"></a>文件生命周期</h2><p>当你创建完毕本地仓库后，你工作目录下的文件会有两种状态:untracked 和tracked。<br>tracked是指那些已经被纳入git版本控制的文件(git所知晓的文件），untracked则是暂是未纳入git管理的文件。</p>
+<p>下图显示了，git所管理文件的生命周期:</p>
+<p><img src="/images/lifecycle.png"></p>
+<p>我们可以通过git status命令来查看当前git管理的文件状态</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">默认情况下，直接远程<span class="built_in">clone</span>所有文件都是追踪的</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &#x27;origin/master&#x27;.</span><br><span class="line">Untracked files:</span><br><span class="line">  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span><br><span class="line"></span><br><span class="line">    README</span><br><span class="line"></span><br><span class="line">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span><br></pre></td></tr></table></figure>
+<p>当我们发现未追踪的README文件后，可以使用git add命令将其记录追踪，并转为staged暂存存状态，等待我们使用git commit命令将其提交本地仓库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git add README</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &#x27;origin/master&#x27;.</span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)</span><br><span class="line"></span><br><span class="line">    new file:   README</span><br></pre></td></tr></table></figure>
+<p>如果我们此时对已追踪文件进行修改之后，则其会变成modified，需要重新使用git add命令将其暂存。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim README</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Your branch is up to date with &#x27;origin/master&#x27;.</span><br><span class="line"></span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)</span><br><span class="line">        new file:   README</span><br><span class="line"></span><br><span class="line">Changes not staged for commit:</span><br><span class="line">  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)</span><br><span class="line">  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)</span><br><span class="line">        modified:   README</span><br><span class="line"><span class="meta">$</span><span class="bash"> git add README</span></span><br></pre></td></tr></table></figure>
+<p>我们发现有两个README文件同时存在，这是因为第一个是git暂存上一次git add命令时的版本，而第二个是你修改后版本，当你想上传最新修改，需要重新使用add命令暂存。</p>
+<p>从这里可以看出git add有两种功能：</p>
+<ul>
+<li>将一个文件追踪  </li>
+<li>将已修改的文件重新暂存。</li>
+</ul>
+<p>对于我们不想使用的文件我们可以使用git rm命令进行删除。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git rm -f README</span></span><br><span class="line">rm &#x27;README&#x27;</span><br></pre></td></tr></table></figure>
+<p>我们下次提交时，其不会纳入版本控制。</p>
+<h2 id="提交更新"><a href="#提交更新" class="headerlink" title="提交更新"></a>提交更新</h2><p>当所有文件已更新至暂存区，那么我们可以使用commit命令去提交到本地仓库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">&quot;你对提交文件的描述&quot;</span></span></span><br><span class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</span><br><span class="line"> create mode 100644 README</span><br></pre></td></tr></table></figure>
+<p>如果此时你还需要提交更新至远程仓库，你可以使用git push命令,推送到远程master分支。(这需要保证在你之前没人推送过或你已更新至最新版)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git push origin master</span></span><br></pre></td></tr></table></figure>
+<h2 id="常用命令使用总结"><a href="#常用命令使用总结" class="headerlink" title="常用命令使用总结"></a>常用命令使用总结</h2><p>当我们使用git来进行版本控制时，我们通常经过以下流程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 此命令将复制远程仓库最新更新于本地</span></span><br><span class="line"> (master) $ git fetch </span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 将远程仓库的master分支合并于本地master</span></span><br><span class="line"> (master) $ git merge origin/master</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建自己最新分支用于工作</span></span><br><span class="line"> (master) $ git checkout -b &quot;2022/1/21-project&quot;</span><br><span class="line">Switched to a new branch &#x27;2022/1/21-project&#x27;</span><br><span class="line"></span><br><span class="line"> (2022/1/21-project) $ git add .</span><br><span class="line"> (2022/1/21-project) $ git commit -m &quot;工作内容&quot;</span><br><span class="line"> (2022/1/21-project) $ git push --set-upstream origin 2022/1/21-project</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://ulricab.github.io/2021/08/20/git%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -172,6 +467,111 @@
         <h2 class="post-title" itemprop="name headline">
           
             <a href="/2021/08/20/git%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C/" class="post-title-link" itemprop="url">git学习之基础(1)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-20 15:14:27" itemprop="dateCreated datePublished" datetime="2021-08-20T15:14:27+08:00">2021-08-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-03-07 13:47:45" itemprop="dateModified" datetime="2022-03-07T13:47:45+08:00">2022-03-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" itemprop="url" rel="index"><span itemprop="name">版本控制</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="git学习之基础操作-1"><a href="#git学习之基础操作-1" class="headerlink" title="git学习之基础操作(1)"></a>git学习之基础操作(1)</h1><h2 id="建立git仓库"><a href="#建立git仓库" class="headerlink" title="建立git仓库"></a>建立git仓库</h2><p>通常建立git仓库的方式分为两种：</p>
+<p>1.通过本地目录进行初始化</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">初始化本地仓库</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git init</span></span><br></pre></td></tr></table></figure>
+<p>2.通过远程仓库克隆现有的仓库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">通过url克隆远程仓库</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> [远程URL]</span></span><br></pre></td></tr></table></figure>
+<p>当我们获取git仓库后，会得到一个.git的子目录，其保存了git仓库相关文件</p>
+<h2 id="文件生命周期"><a href="#文件生命周期" class="headerlink" title="文件生命周期"></a>文件生命周期</h2><p>当你创建完毕本地仓库后，你工作目录下的文件会有两种状态:untracked 和tracked。<br>tracked是指那些已经被纳入git版本控制的文件(git所知晓的文件），untracked则是暂是未纳入git管理的文件。</p>
+<p>下图显示了，git所管理文件的生命周期:</p>
+<p><img src="/images/lifecycle.png"></p>
+<p>我们可以通过git status命令来查看当前git管理的文件状态</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">默认情况下，直接远程<span class="built_in">clone</span>所有文件都是追踪的</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &#x27;origin/master&#x27;.</span><br><span class="line">Untracked files:</span><br><span class="line">  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span><br><span class="line"></span><br><span class="line">    README</span><br><span class="line"></span><br><span class="line">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span><br></pre></td></tr></table></figure>
+<p>当我们发现未追踪的README文件后，可以使用git add命令将其记录追踪，并转为staged暂存状态，等待我们使用git commit命令将其提交本地仓库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git add README</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &#x27;origin/master&#x27;.</span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)</span><br><span class="line"></span><br><span class="line">    new file:   README</span><br></pre></td></tr></table></figure>
+<p>如果我们此时对已追踪文件进行修改之后，则其会变成modified，需要重新使用git add命令将其暂存。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim README</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Your branch is up to date with &#x27;origin/master&#x27;.</span><br><span class="line"></span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)</span><br><span class="line">        new file:   README</span><br><span class="line"></span><br><span class="line">Changes not staged for commit:</span><br><span class="line">  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)</span><br><span class="line">  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)</span><br><span class="line">        modified:   README</span><br><span class="line"><span class="meta">$</span><span class="bash"> git add README</span></span><br></pre></td></tr></table></figure>
+<p>我们发现有两个README文件同时存在，第一个README文件暂存上一次git add命令时的版本，而第二个是你修改后版本，当你想上传最新修改，需要重新使用add命令暂存。</p>
+<p>从这里可以看出git add有两种功能：</p>
+<ul>
+<li>将一个untracked文件追踪并暂存 </li>
+<li>将已修改的文件重新暂存。</li>
+</ul>
+<p>对于我们不想使用的文件我们可以使用git rm命令进行删除。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git rm -f README</span></span><br><span class="line">rm &#x27;README&#x27;</span><br></pre></td></tr></table></figure>
+<p>我们下次提交时，其不会纳入版本控制。</p>
+<h2 id="提交更新"><a href="#提交更新" class="headerlink" title="提交更新"></a>提交更新</h2><p>当所有文件已更新至暂存区，那么我们可以使用commit命令去提交到本地仓库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">&quot;你对提交文件的描述&quot;</span></span></span><br><span class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</span><br><span class="line"> create mode 100644 README</span><br></pre></td></tr></table></figure>
+<p>如果此时你还需要提交更新至远程仓库，你可以使用git push命令,推送到远程master分支。(这需要保证在你之前没人推送过或你已更新至最新版)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git push origin master</span></span><br></pre></td></tr></table></figure>
+<h2 id="常用命令使用总结"><a href="#常用命令使用总结" class="headerlink" title="常用命令使用总结"></a>常用命令使用总结</h2><p>当我们使用git来进行版本控制时，我们通常经过以下流程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 此命令将复制远程仓库最新更新于本地</span></span><br><span class="line"> (master) $ git fetch </span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 将远程仓库的master分支合并于本地master</span></span><br><span class="line"> (master) $ git merge origin/master</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建自己最新分支用于工作</span></span><br><span class="line"> (master) $ git checkout -b &quot;2022/1/21-project&quot;</span><br><span class="line">Switched to a new branch &#x27;2022/1/21-project&#x27;</span><br><span class="line"></span><br><span class="line"> (2022/1/21-project) $ git add .</span><br><span class="line"> (2022/1/21-project) $ git commit -m &quot;工作内容&quot;</span><br><span class="line"> (2022/1/21-project) $ git push --set-upstream origin 2022/1/21-project</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ulricab.github.io/2021/08/20/python%E5%90%8E%E5%8F%B0%E5%AF%BC%E5%85%A5neo4j/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="胡培鸿">
+      <meta itemprop="description" content="苟日新，日日新，又日新">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="哆啦a梦的四次元口袋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/08/20/python%E5%90%8E%E5%8F%B0%E5%AF%BC%E5%85%A5neo4j/" class="post-title-link" itemprop="url">git学习之基础(1)</a>
         </h2>
 
         <div class="post-meta">
@@ -396,20 +796,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

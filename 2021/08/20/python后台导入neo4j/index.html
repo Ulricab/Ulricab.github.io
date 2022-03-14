@@ -20,22 +20,22 @@
     var CONFIG = {"hostname":"ulricab.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="git学习之基础操作(1)建立git仓库通常建立git仓库的方式分为两种： 1.通过本地目录进行初始化 12#初始化本地仓库$ git init 2.通过远程仓库克隆现有的仓库 12#通过url克隆远程仓库$ git clone [远程URL] 当我们获取git仓库后，会得到一个.git的子目录，其保存了git仓库相关文件 文件生命周期当你创建完毕本地仓库后，你工作目录下的文件会有两种状态:unt">
+  <meta name="description" content="git学习之基础(1)建立git仓库通常建立git仓库的方式分为两种： 1.通过本地目录进行初始化 12#初始化本地仓库$ git init 2.通过远程仓库克隆现有的仓库 12#通过url克隆远程仓库$ git clone [远程URL] 当我们获取git仓库后，会得到一个.git的子目录，其保存了git仓库相关文件 文件生命周期当你创建完毕本地仓库后，你工作目录下的文件会有两种状态:untra">
 <meta property="og:type" content="article">
 <meta property="og:title" content="git学习之基础(1)">
-<meta property="og:url" content="https://ulricab.github.io/2021/08/20/git%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:url" content="https://ulricab.github.io/2021/08/20/python%E5%90%8E%E5%8F%B0%E5%AF%BC%E5%85%A5neo4j/index.html">
 <meta property="og:site_name" content="哆啦a梦的四次元口袋">
-<meta property="og:description" content="git学习之基础操作(1)建立git仓库通常建立git仓库的方式分为两种： 1.通过本地目录进行初始化 12#初始化本地仓库$ git init 2.通过远程仓库克隆现有的仓库 12#通过url克隆远程仓库$ git clone [远程URL] 当我们获取git仓库后，会得到一个.git的子目录，其保存了git仓库相关文件 文件生命周期当你创建完毕本地仓库后，你工作目录下的文件会有两种状态:unt">
+<meta property="og:description" content="git学习之基础(1)建立git仓库通常建立git仓库的方式分为两种： 1.通过本地目录进行初始化 12#初始化本地仓库$ git init 2.通过远程仓库克隆现有的仓库 12#通过url克隆远程仓库$ git clone [远程URL] 当我们获取git仓库后，会得到一个.git的子目录，其保存了git仓库相关文件 文件生命周期当你创建完毕本地仓库后，你工作目录下的文件会有两种状态:untra">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ulricab.github.io/images/lifecycle.png">
 <meta property="article:published_time" content="2021-08-20T07:14:27.000Z">
-<meta property="article:modified_time" content="2022-03-07T05:47:45.025Z">
+<meta property="article:modified_time" content="2022-01-21T11:26:49.782Z">
 <meta property="article:author" content="胡培鸿">
 <meta property="article:tag" content="git">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://ulricab.github.io/images/lifecycle.png">
 
-<link rel="canonical" href="https://ulricab.github.io/2021/08/20/git%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C/">
+<link rel="canonical" href="https://ulricab.github.io/2021/08/20/python%E5%90%8E%E5%8F%B0%E5%AF%BC%E5%85%A5neo4j/">
 
 
 <script id="page-configurations">
@@ -163,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ulricab.github.io/2021/08/20/git%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C/">
+    <link itemprop="mainEntityOfPage" href="https://ulricab.github.io/2021/08/20/python%E5%90%8E%E5%8F%B0%E5%AF%BC%E5%85%A5neo4j/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -193,7 +193,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-03-07 13:47:45" itemprop="dateModified" datetime="2022-03-07T13:47:45+08:00">2022-03-07</time>
+                <time title="修改时间：2022-01-21 19:26:49" itemprop="dateModified" datetime="2022-01-21T19:26:49+08:00">2022-01-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -216,7 +216,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="git学习之基础操作-1"><a href="#git学习之基础操作-1" class="headerlink" title="git学习之基础操作(1)"></a>git学习之基础操作(1)</h1><h2 id="建立git仓库"><a href="#建立git仓库" class="headerlink" title="建立git仓库"></a>建立git仓库</h2><p>通常建立git仓库的方式分为两种：</p>
+        <h1 id="git学习之基础-1"><a href="#git学习之基础-1" class="headerlink" title="git学习之基础(1)"></a>git学习之基础(1)</h1><h2 id="建立git仓库"><a href="#建立git仓库" class="headerlink" title="建立git仓库"></a>建立git仓库</h2><p>通常建立git仓库的方式分为两种：</p>
 <p>1.通过本地目录进行初始化</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">初始化本地仓库</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git init</span></span><br></pre></td></tr></table></figure>
 <p>2.通过远程仓库克隆现有的仓库</p>
@@ -227,14 +227,14 @@
 <p><img src="/images/lifecycle.png"></p>
 <p>我们可以通过git status命令来查看当前git管理的文件状态</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">默认情况下，直接远程<span class="built_in">clone</span>所有文件都是追踪的</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &#x27;origin/master&#x27;.</span><br><span class="line">Untracked files:</span><br><span class="line">  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span><br><span class="line"></span><br><span class="line">    README</span><br><span class="line"></span><br><span class="line">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span><br></pre></td></tr></table></figure>
-<p>当我们发现未追踪的README文件后，可以使用git add命令将其记录追踪，并转为staged暂存状态，等待我们使用git commit命令将其提交本地仓库。</p>
+<p>当我们发现未追踪的README文件后，可以使用git add命令将其记录追踪，并转为staged暂存存状态，等待我们使用git commit命令将其提交本地仓库。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git add README</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with &#x27;origin/master&#x27;.</span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)</span><br><span class="line"></span><br><span class="line">    new file:   README</span><br></pre></td></tr></table></figure>
 <p>如果我们此时对已追踪文件进行修改之后，则其会变成modified，需要重新使用git add命令将其暂存。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim README</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git status</span></span><br><span class="line">On branch master</span><br><span class="line">Your branch is up to date with &#x27;origin/master&#x27;.</span><br><span class="line"></span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)</span><br><span class="line">        new file:   README</span><br><span class="line"></span><br><span class="line">Changes not staged for commit:</span><br><span class="line">  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)</span><br><span class="line">  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)</span><br><span class="line">        modified:   README</span><br><span class="line"><span class="meta">$</span><span class="bash"> git add README</span></span><br></pre></td></tr></table></figure>
-<p>我们发现有两个README文件同时存在，第一个README文件暂存上一次git add命令时的版本，而第二个是你修改后版本，当你想上传最新修改，需要重新使用add命令暂存。</p>
+<p>我们发现有两个README文件同时存在，这是因为第一个是git暂存上一次git add命令时的版本，而第二个是你修改后版本，当你想上传最新修改，需要重新使用add命令暂存。</p>
 <p>从这里可以看出git add有两种功能：</p>
 <ul>
-<li>将一个untracked文件追踪并暂存 </li>
+<li>将一个文件追踪  </li>
 <li>将已修改的文件重新暂存。</li>
 </ul>
 <p>对于我们不想使用的文件我们可以使用git rm命令进行删除。</p>
@@ -266,12 +266,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/08/20/python%E5%90%8E%E5%8F%B0%E5%AF%BC%E5%85%A5neo4j/" rel="prev" title="git学习之基础(1)">
-      <i class="fa fa-chevron-left"></i> git学习之基础(1)
+    <a href="/2021/08/03/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/02/24/linux%E4%B9%8B%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/" rel="next" title="linux之文件权限管理">
-      linux之文件权限管理 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/08/20/git%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C/" rel="next" title="git学习之基础(1)">
+      git学习之基础(1) <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -331,7 +331,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C-1"><span class="nav-number">1.</span> <span class="nav-text">git学习之基础操作(1)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8Bgit%E4%BB%93%E5%BA%93"><span class="nav-number">1.1.</span> <span class="nav-text">建立git仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.2.</span> <span class="nav-text">文件生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E6%9B%B4%E6%96%B0"><span class="nav-number">1.3.</span> <span class="nav-text">提交更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93"><span class="nav-number">1.4.</span> <span class="nav-text">常用命令使用总结</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80-1"><span class="nav-number">1.</span> <span class="nav-text">git学习之基础(1)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8Bgit%E4%BB%93%E5%BA%93"><span class="nav-number">1.1.</span> <span class="nav-text">建立git仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.2.</span> <span class="nav-text">文件生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E6%9B%B4%E6%96%B0"><span class="nav-number">1.3.</span> <span class="nav-text">提交更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93"><span class="nav-number">1.4.</span> <span class="nav-text">常用命令使用总结</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
